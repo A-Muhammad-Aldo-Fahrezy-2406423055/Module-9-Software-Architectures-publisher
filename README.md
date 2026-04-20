@@ -17,3 +17,6 @@ Setiap pesan diserialkan menggunakan *Borsh serialization* sebelum dikirim ke qu
 ## b. URL `amqp://guest:guest@localhost:5672` sama dengan subscriber, apa artinya?
 
 Penggunaan URL yang **sama persis** antara publisher dan subscriber menunjukkan bahwa keduanya terhubung ke **message broker yang sama**, yaitu instansi RabbitMQ yang berjalan di `localhost:5672`. Ini adalah inti dari arsitektur *event-driven* dimana publisher dan subscriber tidak berkomunikasi secara langsung satu sama lain, melainkan keduanya dihubungkan melalui perantara (*broker*) yang sama. Publisher cukup mengirim pesan ke broker dan broker yang bertanggung jawab meneruskannya ke subscriber yang mendaftarkan diri pada queue yang sesuai (`user_created`). Dengan demikian, publisher dan subscriber tetap *loosely coupled* (mereka tidak perlu saling mengenal).
+
+## Screenshot of running RabbitMQ
+![Running RabbitMQ](assets/images/RabbitMQ.png)
