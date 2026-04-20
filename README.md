@@ -46,3 +46,26 @@ Event-event tersebut tidak langsung dikirim ke subscriber, melainkan terlebih da
 masuk ke antrian (*queue*) di RabbitMQ. Subscriber yang sudah berjalan dan mendengarkan
 queue `user_created` kemudian mengambil dan memproses setiap event satu per satu,
 mencetak output seperti:
+
+## Monitoring Chart Based on Publisher
+
+### Screenshot of RabbitMQ Message Rate Spikes
+![RabbitMQ Spikes](assets/images/RabbitMQ%20spikes.png)
+
+Pada grafik **Message rates** di RabbitMQ Management Overview, terlihat tiga buah
+*spike* (lonjakan) yang muncul di sekitar waktu `14:28:38`, `14:29:05`, dan `14:29:18`.
+Setiap spike tersebut berkorelasi langsung dengan satu kali eksekusi `cargo run` pada
+direktori publisher.
+
+Setiap kali publisher dijalankan, ia langsung mempublikasikan 5 event sekaligus ke
+queue `user_created` dalam waktu yang sangat singkat. Hal ini menyebabkan lonjakan
+tajam pada *message rate* (diukur dalam pesan per detik, /s), yang kemudian langsung
+turun kembali ke `0.0/s` karena publisher selesai berjalan dan tidak ada pengiriman
+pesan lebih lanjut.
+
+Spike tertinggi mencapai sekitar **2.0/s**, yang berarti pada saat itu broker menerima
+dan meneruskan pesan dengan laju 2 pesan per detik. Pola naik-turun yang tajam ini
+adalah karakteristik khas dari publisher yang bersifat *burst* — mengirim banyak pesan
+sekaligus lalu berhenti — berbeda dengan publisher yang mengirim pesan secara
+kontinu dan stabil. Ini membuktikan bahwa setiap spike pada grafik adalah jejak
+langsung dari satu kali pemanggilan `cargo run` pada publisher.
